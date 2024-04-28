@@ -134,7 +134,4 @@ func (p *Parser) Parse(in io.Reader) ([]painter.Operation, error) {
   return res, nil
 }
 
-  }
 
-  return res, nil
-}

@@ -107,4 +107,3 @@ func (mq *messageQueue) empty() bool {
 	return len(mq.ops) == 0
 }
 
-}
