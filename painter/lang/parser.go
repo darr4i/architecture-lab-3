@@ -71,7 +71,7 @@ func (p *Parser) Parse(in io.Reader) ([]painter.Operation, error) {
         x2, err3 := strconv.ParseFloat(cmd[3], 64)
         y2, err4 := strconv.ParseFloat(cmd[4], 64)
 
-        if err1 != nil  err2 != nil  err3 != nil  err4 != nil {
+        if err1 != nil || err2 != nil || err3 != nil || err4 != nil {
           return nil, errors.New("invalid arguments for bgrect")
         }
 
@@ -90,7 +90,7 @@ func (p *Parser) Parse(in io.Reader) ([]painter.Operation, error) {
         x, err1 := strconv.ParseFloat(cmd[1], 64)
         y, err2 := strconv.ParseFloat(cmd[2], 64)
 
-        if err1 != nil  err2 != nil {
+        if err1 != nil || err2 != nil {
           return nil, errors.New("invalid arguments for figure")
         }
 
@@ -129,6 +129,11 @@ func (p *Parser) Parse(in io.Reader) ([]painter.Operation, error) {
         p.Figures = nil
       }
     }
+  }
+
+  return res, nil
+}
+
   }
 
   return res, nil
