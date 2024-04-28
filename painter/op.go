@@ -1,25 +1,26 @@
 package painter
 
 import (
-	"image/color"
+  "image"
+  "image/color"
 
-	"golang.org/x/exp/shiny/screen"
+  "golang.org/x/exp/shiny/screen"
 )
 
 // Operation змінює вхідну текстуру.
 type Operation interface {
-	// Do виконує зміну операції, повертаючи true, якщо текстура вважається готовою для відображення.
-	Do(t screen.Texture) (ready bool)
+  // Do виконує зміну операції, повертаючи true, якщо текстура вважається готовою для відображення.
+  Do(t screen.Texture) (ready bool)
 }
 
 // OperationList групує список операції в одну.
 type OperationList []Operation
 
 func (ol OperationList) Do(t screen.Texture) (ready bool) {
-	for _, o := range ol {
-		ready = o.Do(t) || ready
-	}
-	return
+  for _, o := range ol {
+    ready = o.Do(t) || ready
+  }
+  return
 }
 
 // UpdateOp операція, яка не змінює текстуру, але сигналізує, що текстуру потрібно розглядати як готову.
@@ -33,16 +34,43 @@ func (op updateOp) Do(t screen.Texture) bool { return true }
 type OperationFunc func(t screen.Texture)
 
 func (f OperationFunc) Do(t screen.Texture) bool {
-	f(t)
-	return false
+  f(t)
+  return false
 }
 
 // WhiteFill зафарбовує тестуру у білий колір. Може бути викоистана як Operation через OperationFunc(WhiteFill).
 func WhiteFill(t screen.Texture) {
-	t.Fill(t.Bounds(), color.White, screen.Src)
+  t.Fill(t.Bounds(), color.White, screen.Src)
 }
 
 // GreenFill зафарбовує тестуру у зелений колір. Може бути викоистана як Operation через OperationFunc(GreenFill).
 func GreenFill(t screen.Texture) {
-	t.Fill(t.Bounds(), color.RGBA{G: 0xff, A: 0xff}, screen.Src)
+  t.Fill(t.Bounds(), color.RGBA{G: 0xff, A: 0xff}, screen.Src)
+}
+
+// BgRect малює прямокутник по координатам лівого верхнього та правого нижнього кута.
+func BgRect(x1, y1, x2, y2 int) OperationFunc {
+  return func(t screen.Texture) {
+    t.Fill(image.Rect(x1, y1, x2, y2), color.Black, screen.Src)
+  }
+}
+
+// Структура, яка представляє фігуру варіанту
+type Figure struct {
+  X int
+  Y int
+}
+
+// DrawFigure повертає Operation, яка малює фігуру варіанту по координатам центру
+func (f *Figure) DrawFigure() OperationFunc {
+  return func(t screen.Texture) {
+    t.Fill(image.Rect(f.X-100, f.Y+50, f.X+100, f.Y-50), color.RGBA{R: 255, G: 255, B: 0, A: 255}, screen.Src)
+    t.Fill(image.Rect(f.X-50, f.Y-100, f.X+50, f.Y+100), color.RGBA{R: 255, G: 255, B: 0, A: 255}, screen.Src)
+  }
+}
+
+// MoveFigure змінює координати центру фігури
+func (f *Figure) MoveFigure(x, y int) {
+  f.X += x
+  f.Y += y
 }
