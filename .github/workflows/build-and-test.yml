@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - name: Update packages and module
@@ -25,4 +25,5 @@ jobs:
         run: go test -race ./...
       - name: Build painter
         run: go build -o out/painter github.com/darr4i/architecture-lab-3/cmd/painter
+
 
